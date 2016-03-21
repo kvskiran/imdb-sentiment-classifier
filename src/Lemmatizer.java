@@ -107,10 +107,10 @@ public class Lemmatizer {
         File[] testPos = new File(baseDir + "test/pos").listFiles();
         //  File[] testNeg = new File(baseDir + "test/neg").listFiles();
         //  File[] trainPos = new File(baseDir + "train/pos").listFiles();
-        //  File[] trainNeg = new File(baseDir + "train/neg").listFiles();        
+        //  File[] trainNeg = new File(baseDir + "train/neg").listFiles();
 
         Lemmatizer lem = new Lemmatizer();
-        
+
         // lemmatization demo
         System.out.println("Starting lemmatization demo...");
         String testFile;

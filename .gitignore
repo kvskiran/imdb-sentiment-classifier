@@ -1,10 +1,15 @@
 *.class
 
-# Package Files #
 *.jar
 *.war
 *.ear
 
 release/
+resources/
 
 workbench.xmi
+eclimd.log
+.project
+.settings
+.metadata
+.classpath
