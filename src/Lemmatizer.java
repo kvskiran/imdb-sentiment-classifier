@@ -101,7 +101,6 @@ public class Lemmatizer {
 
     public static void main(String[] args) {
         // testing and demonstration
-        // ** change the directory structure to match yours **
         String baseDir = "resources/aclImdb/";
         File[] testPos = new File(baseDir + "test/pos").listFiles();
         //  File[] testNeg = new File(baseDir + "test/neg").listFiles();
