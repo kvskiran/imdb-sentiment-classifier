@@ -4,7 +4,7 @@
 *.war
 *.ear
 
-resources/
+resources/*
 target/
 bin/
 .metadata/
