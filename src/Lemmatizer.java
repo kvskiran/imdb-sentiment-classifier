@@ -102,8 +102,7 @@ public class Lemmatizer {
     public static void main(String[] args) {
         // testing and demonstration
         // ** change the directory structure to match yours **
-        String baseDir = "/home/matt/Dropbox/Classwork/text-mining-language-processing/" 
-            + "final-project/imdb-sentiment-classifier/resources/aclImdb/";
+        String baseDir = "resources/aclImdb/";
         File[] testPos = new File(baseDir + "test/pos").listFiles();
         //  File[] testNeg = new File(baseDir + "test/neg").listFiles();
         //  File[] trainPos = new File(baseDir + "train/pos").listFiles();
