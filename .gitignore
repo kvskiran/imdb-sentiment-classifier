@@ -4,12 +4,13 @@
 *.war
 *.ear
 
-release/
 resources/
+target/
+bin/
+.metadata/
+.settings/
 
 workbench.xmi
 eclimd.log
 .project
-.settings
-.metadata
 .classpath
