@@ -31,7 +31,7 @@ public class Lemmatizer {
         this.pipeline = new StanfordCoreNLP(props);
     }
     
-    // function to read contents of a file into a String
+    // utility method to read contents of a file into a String
     private static String readFile(String path, Charset encoding)
         throws IOException 
     {
@@ -39,7 +39,9 @@ public class Lemmatizer {
         return new String(encoded,encoding);
     }
 
-    private List<String> lemmatize(String documentText)
+    // takes the contents of a document as input
+    // outputs a lemmatized version of that document
+    public List<String> lemmatize(String documentText)
     {
         // used to store lemmatized vocab
         List<String> lemmas = new LinkedList<String>();
@@ -62,15 +64,19 @@ public class Lemmatizer {
         return lemmas;
     }
 
+    // generate a term-document matrix for a corpus of text files
+    // each entry has the following form:
+    //   word (String) -> (document (String) -> frequency (integer))
     public HashMap<String, HashMap<String, Integer>> buildVocabulary(List<File> corpus) {
         HashMap<String, HashMap<String, Integer>> vocab = new HashMap<String, HashMap<String, Integer>>();
-        
+        // iterate through corpus
         for (File doc : corpus) {
             try {
-                String path = readFile(doc.getAbsolutePath(),
+                String contents = readFile(doc.getAbsolutePath(),
                                        Charset.forName("UTF-8"));
-                List<String> words = this.lemmatize(path);
-                
+                List<String> words = this.lemmatize(contents);
+
+                // build vocab hashmap
                 for (String word : words) {
                     if (!vocab.containsKey(word)) {
                         HashMap<String, Integer> val = new HashMap<String, Integer>();
@@ -90,17 +96,18 @@ public class Lemmatizer {
                 System.out.println(e);
             }
         }
-        
         return vocab;
     }
 
     public static void main(String[] args) {
+        // testing and demonstration
+        // ** change the directory structure to match yours **
         String baseDir = "/home/matt/Dropbox/Classwork/text-mining-language-processing/" 
             + "final-project/imdb-sentiment-classifier/resources/aclImdb/";
         File[] testPos = new File(baseDir + "test/pos").listFiles();
-      //  File[] testNeg = new File(baseDir + "test/neg").listFiles();
-      //  File[] trainPos = new File(baseDir + "train/pos").listFiles();
-      //  File[] trainNeg = new File(baseDir + "train/neg").listFiles();        
+        //  File[] testNeg = new File(baseDir + "test/neg").listFiles();
+        //  File[] trainPos = new File(baseDir + "train/pos").listFiles();
+        //  File[] trainNeg = new File(baseDir + "train/neg").listFiles();        
 
         Lemmatizer lem = new Lemmatizer();
         
