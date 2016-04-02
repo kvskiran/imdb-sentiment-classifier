@@ -4,5 +4,5 @@
 
 ```
 $ mvn compile
-$ mvn exec:java -Dexec.mainClass=Main
+$ mvn exec:java -Dexec.mainClass=App
 ```
