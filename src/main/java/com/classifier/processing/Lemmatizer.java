@@ -1,6 +1,6 @@
-package processing;
+package com.classifier.processing;
 
-import utilities.Util;
+import com.classifier.utilities.Util;
 
 import java.io.File;
 import java.io.IOException;

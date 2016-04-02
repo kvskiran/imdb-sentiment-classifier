@@ -1,3 +1,5 @@
+package com.classifier;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -5,20 +7,20 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 
-import processing.Lemmatizer;
-import processing.Stemmer;
-import processing.StopwordRemover;
+import com.classifier.processing.Lemmatizer;
+import com.classifier.processing.Stemmer;
+import com.classifier.processing.StopwordRemover;
 
-import utilities.Util;
+import com.classifier.utilities.Util;
 
-public class Main {
+public class App {
 
     public static void demoVocabBuild(Lemmatizer lem, List<File> files) {
         System.out.println("\nStarting vocab building demo...");
 
         // build vocab
         HashMap<String, HashMap<String, Integer>> vocab = 
-            lem.buildVocabulary(files);
+            lem.buildVocabulary(files); 
 
         // print the vocab
         for (String word : vocab.keySet()) {
@@ -29,7 +31,7 @@ public class Main {
                 docList += "(" + doc + ", " + docs.get(doc) + ") ";
             }
 
-            System.out.println(word + " -> " + docList);                   
+            System.out.println(word + " -> " + docList);
         }
     }
 

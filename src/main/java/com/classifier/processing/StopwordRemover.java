@@ -1,9 +1,9 @@
-package processing;
+package com.classifier.processing;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import utilities.Util;
+import com.classifier.utilities.Util;
 
 
 public class StopwordRemover {    

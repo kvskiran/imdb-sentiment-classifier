@@ -1,5 +1,3 @@
-package processing;
-
 /*
 
    Porter stemmer in Java. The original paper is in
@@ -33,6 +31,7 @@ package processing;
    Release 4
 
 */
+package com.classifier.processing;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

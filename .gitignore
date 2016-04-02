@@ -4,7 +4,7 @@
 *.war
 *.ear
 
-resources/processed/
+src/main/resources/processed/
 target/
 bin/
 .metadata/
