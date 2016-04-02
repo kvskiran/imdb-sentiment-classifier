@@ -66,8 +66,8 @@ public class Main {
         String baseDir = "resources/aclImdb/";
         File[] trainPos = new File(baseDir + "train/pos").listFiles();
         File[] trainNeg = new File(baseDir + "train/neg").listFiles();
-        File[] testPos = new File(baseDir + "train/pos").listFiles();
-        File[] testNeg = new File(baseDir + "train/neg").listFiles();        
+        File[] testPos = new File(baseDir + "test/pos").listFiles();
+        File[] testNeg = new File(baseDir + "test/neg").listFiles();        
 
         Lemmatizer lem = new Lemmatizer();
         Stemmer stem = new Stemmer();
