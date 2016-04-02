@@ -6,6 +6,7 @@ import java.util.List;
 
 import processing.Lemmatizer;
 import processing.Stemmer;
+import processing.StopwordRemover;
 
 import utilities.Util;
 
@@ -49,27 +50,20 @@ public class Main {
         System.out.println("\n###### RAW STR ######");
         System.out.println(testStr);
 
-        // lemmatize and concatenate lemmas
+        // lemmatize
         List<String> lemmas = lem.lemmatize(testStr);
-        String concatLemmas = "";
-        for (String lemma : lemmas) {
-            concatLemmas += lemma + " ";
-        }
 
         // print lemmatized string
         System.out.println("\n###### LEMMATIZED ######");
-        System.out.println(concatLemmas);
+        System.out.println(Util.concatList(lemmas));
 
-        // stem and concatenate stems
-        List<String> stems = stem.stemStr(Util.removeSpecialCharacters(concatLemmas));
-        String concatStems = "";
-        for (String el : stems) {
-            concatStems += el + " ";
-        }
+        // remove stopwords and stem
+        List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwords(lemmas);
+        List<String> stems = stem.stemStr(Util.removeSpecialCharacters(Util.concatList(lemmasWithoutStopwords)));
 
         // print stemmed string
         System.out.println("\n###### STEMMED ######");
-        System.out.println(concatStems);
+        System.out.println(Util.concatList(stems));
 
         // demoVocabBuild(lem, Arrays.asList(testPos));
     }

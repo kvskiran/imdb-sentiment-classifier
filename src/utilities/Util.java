@@ -1,16 +1,21 @@
 package utilities;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public final class Util {
 
     // convert an array of char primitives to an array of Character objects
-    public static Character[] toObject(char[] array) {
+    private static Character[] toObject(char[] array) {
         if (array == null || array.length == 0) {
             return null;
         }
@@ -30,6 +35,25 @@ public final class Util {
         return new String(encoded,encoding);
     }
 
+    // read lines of file into a list
+    public static List<String> readFileByLine(String path) 
+        throws FileNotFoundException, IOException
+    {
+        List<String> lines = new ArrayList<String>();
+        File file = new File(path);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (FileNotFoundException e) {
+            throw e;
+        } catch (IOException e) {
+            throw e;
+        }
+        return lines; 
+    }
+
     // remove all special characters from a string
     // replace them with spaces
     public static String removeSpecialCharacters(String str) {
@@ -46,6 +70,14 @@ public final class Util {
             }
         }
         return output;
+    }
+
+    public static String concatList(List<String> list) {
+        String concatenated = "";
+        for (String el : list) {
+            concatenated += el + " ";
+        }
+        return concatenated;
     }
 
     public static void main(String args [ ]) {
