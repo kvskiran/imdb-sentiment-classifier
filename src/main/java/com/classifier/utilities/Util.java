@@ -79,12 +79,4 @@ public final class Util {
         }
         return concatenated;
     }
-
-    public static void main(String args [ ]) {
-        String testStr = "hell there didn't i tell you or not 920359u2 ** I'm not sure 92105u " + 
-            " what to ]da say <br /> <br /> hello";
-
-        System.out.println(testStr);
-        System.out.println(removeSpecialCharacters(testStr));
-    }
 }

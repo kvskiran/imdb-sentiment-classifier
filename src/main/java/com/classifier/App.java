@@ -53,24 +53,25 @@ public class App {
 
         // remove stopwords and stem
         List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwords(lemmas);
+
         List<String> stems = stem.stemStr(Util.removeSpecialCharacters(Util.concatList(lemmasWithoutStopwords)));
 
         // write processed str to new file
         try {
             PrintStream ps = new PrintStream(processedFile.getAbsolutePath());
             ps.println(Util.concatList(stems));
+            ps.close();
         }
         catch (Exception e) { }
     }
         
     public static void main(String args [ ]) {
         // test files
-        String baseDir = "resources/aclImdb/";
+        String baseDir = "src/main/resources/aclImdb/";
         File[] trainPos = new File(baseDir + "train/pos").listFiles();
         File[] trainNeg = new File(baseDir + "train/neg").listFiles();
         File[] testPos = new File(baseDir + "test/pos").listFiles();
         File[] testNeg = new File(baseDir + "test/neg").listFiles();        
-
         Lemmatizer lem = new Lemmatizer();
         Stemmer stem = new Stemmer();
 
