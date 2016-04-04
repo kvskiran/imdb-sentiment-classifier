@@ -38,7 +38,7 @@ public class App {
     public static void process(File file, Lemmatizer lem, Stemmer stem)  
     {
         String fileStr = "";
-        File processedFile = new File(file.getAbsolutePath().replace("resources","resources/processed"));
+        File processedFile = new File(file.getAbsolutePath().replace("resources","resources" + File.separator + "processed"));
 
         try {
             fileStr = Util.readFile(file.getAbsolutePath(), Charset.forName("UTF-8")).toLowerCase();
@@ -67,11 +67,12 @@ public class App {
         
     public static void main(String args [ ]) {
         // test files
-        String baseDir = "src/main/resources/aclImdb/";
-        File[] trainPos = new File(baseDir + "train/pos").listFiles();
-        File[] trainNeg = new File(baseDir + "train/neg").listFiles();
-        File[] testPos = new File(baseDir + "test/pos").listFiles();
-        File[] testNeg = new File(baseDir + "test/neg").listFiles();        
+        String baseDir = "src" + File.separator + "main" + File.separator 
+            + "resources" + File.separator + "aclImdb" + File.separator;
+        File[] trainPos = new File(baseDir + "train" + File.separator + "pos").listFiles();
+        File[] trainNeg = new File(baseDir + "train" + File.separator + "neg").listFiles();
+        File[] testPos = new File(baseDir + "test" + File.separator + "pos").listFiles();
+        File[] testNeg = new File(baseDir + "test" + File.separator + "neg").listFiles();        
         Lemmatizer lem = new Lemmatizer();
         Stemmer stem = new Stemmer();
 
