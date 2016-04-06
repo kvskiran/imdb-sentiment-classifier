@@ -1,7 +1,13 @@
-import java.io.*;
-import java.util.*;
+package com.classifier.processing;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.nio.file.*;
+import java.util.List;
+import java.util.Scanner;
 
 class termDocumentMatrix
 {
@@ -15,7 +21,9 @@ class termDocumentMatrix
   public static void main(String[] args)
   {
     System.out.println("Loading vocab...");
-    _vocab = loadVocab("C:\\Java\\Project\\Data\\aclImdb\\imdb.vocab");
+    _vocab = loadVocab("src" + File.separator + "main" + File.separator 
+                       + "resources" + File.separator + "aclImdb" 
+                       + File.separator + "imdb.vocab");
     if(_vocab == null)
     {
       System.out.println("Failed to load vocab.");
@@ -26,7 +34,10 @@ class termDocumentMatrix
     }
     
     System.out.println("Loading document names...");
-    _documents = loadDocuments("C:\\Java\\Project\\Data\\aclImdb\\train");
+    _documents = loadDocuments("src" + File.separator + "main" 
+                               + File.separator + "resources" 
+                               + File.separator + "aclImdb" 
+                               + File.separator + "train");
     if(_vocab == null)
     {
       System.out.println("Failed to load document names.");
@@ -36,7 +47,9 @@ class termDocumentMatrix
       System.out.println("Finished loading documents. Count : " + _documents.size());
     }
         System.out.println("Initializing term document matrix. This may take up to several minutes...");
-        initMatrix("C:\\Java\\Project\\Data\\aclImdb\\train");
+        initMatrix("src" + File.separator + "main" + File.separator 
+                   + "resources" + File.separator + "aclImdb" 
+                   + File.separator + "train");
         System.out.println("Finished initializing matrix.");
             System.out.println("Usage -c <docID 1> <docID 2>");
             System.out.println("Usage -d <term>");
@@ -66,6 +79,7 @@ class termDocumentMatrix
             System.out.println("Usage -d <term>");
           }
         }
+        scan.close();
         
     return;
   }
@@ -92,7 +106,8 @@ class termDocumentMatrix
         vocacID = vocacID + 1;
         }
       }
- 
+      bufferReader.close();
+
      }
      catch(Exception e)
      {
@@ -106,12 +121,13 @@ class termDocumentMatrix
   protected static HashMap<String, Integer> loadDocuments(String filePath)
   {
       HashMap<String, Integer> documentList = new HashMap<String, Integer>();
-      
+
       try
       {
         int documentID = 0;
         
-        File[] files_neg = new File(filePath + "\\neg").listFiles();
+        File[] files_neg = new File(filePath + File.separator + "neg")
+            .listFiles();
         
         for (File file : files_neg) 
         {
@@ -122,7 +138,8 @@ class termDocumentMatrix
           }
         }
         
-        File[] files_pos = new File(filePath + "\\pos").listFiles();
+        File[] files_pos = new File(filePath + File.separator + "pos")
+            .listFiles();
         
         for (File file : files_pos) 
         {
@@ -149,21 +166,26 @@ class termDocumentMatrix
     _dictionary = new HashMap<String, List<Integer>>();
     try
     {
-      int sat = 0;
-        File[] files_neg = new File(filePath + "\\neg").listFiles();
+        File[] files_neg = new File(filePath + File.separator + "neg").listFiles();
         for (File file : files_neg) 
         {
           if (file.isFile()) 
           {
-            addFiletoMatrix(_documents.get("n" + file.getName()), filePath + "\\neg\\" + file.getName());
+            addFiletoMatrix(_documents.get("n" + file.getName()), 
+                            filePath + File.separator + "neg" 
+                            + File.separator + file.getName());
           }
         }
-        File[] files_pos = new File(filePath + "\\pos").listFiles();
+        File[] files_pos = new File(filePath + File.separator + "pos")
+            .listFiles();
+
         for (File file : files_pos) 
         {
           if (file.isFile()) 
           {
-            addFiletoMatrix(_documents.get("p" + file.getName()), filePath + "\\pos\\" + file.getName());
+            addFiletoMatrix(_documents.get("p" + file.getName()), 
+                            filePath + File.separator + "pos" 
+                            + File.separator  + file.getName());
           }
 
         }
