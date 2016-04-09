@@ -7,10 +7,10 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 
-import com.classifier.processing.Lemmatizer;
-import com.classifier.processing.Stemmer;
-import com.classifier.processing.StopwordRemover;
-
+import com.classifier.process.Lemmatizer;
+import com.classifier.process.Stemmer;
+import com.classifier.process.StopwordRemover;
+import com.classifier.utilities.Documents;
 import com.classifier.utilities.Util;
 
 public class App {
@@ -67,12 +67,16 @@ public class App {
         
     public static void main(String args [ ]) {
         // test files
-        String baseDir = "src" + File.separator + "main" + File.separator 
+        String rawDir = "src" + File.separator + "main" + File.separator 
             + "resources" + File.separator + "aclImdb" + File.separator;
-        File[] trainPos = new File(baseDir + "train" + File.separator + "pos").listFiles();
-        File[] trainNeg = new File(baseDir + "train" + File.separator + "neg").listFiles();
-        File[] testPos = new File(baseDir + "test" + File.separator + "pos").listFiles();
-        File[] testNeg = new File(baseDir + "test" + File.separator + "neg").listFiles();        
+        String processedDir = "src" + File.separator + "main" 
+            + File.separator + "resources" + File.separator 
+            + "processed" + File.separator + "aclImdb" + File.separator;
+
+        File[] trainPos = new File(rawDir + "train" + File.separator + "pos").listFiles();
+        File[] trainNeg = new File(rawDir + "train" + File.separator + "neg").listFiles();
+        File[] testPos = new File(rawDir + "test" + File.separator + "pos").listFiles();
+        File[] testNeg = new File(rawDir + "test" + File.separator + "neg").listFiles();        
         Lemmatizer lem = new Lemmatizer();
         Stemmer stem = new Stemmer();
 
@@ -95,5 +99,13 @@ public class App {
             process(f, lem, stem);
             System.out.println(f.getAbsolutePath() + " processed.");
         }
+
+        System.out.println("Processing complete.");
+
+        System.out.println("Building vocabulary...");
+
+        // build vocabulary from processed training data
+        Documents.buildVocab(processedDir + "train", 
+                             processedDir + "aclImdb.vocab");
     }
 }

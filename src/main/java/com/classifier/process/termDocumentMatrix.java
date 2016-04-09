@@ -1,4 +1,4 @@
-package com.classifier.processing;
+package com.classifier.process;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.classifier.processing;
+package com.classifier.process;
 
 import com.classifier.utilities.Util;
 

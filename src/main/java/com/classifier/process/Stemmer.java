@@ -31,7 +31,7 @@
    Release 4
 
 */
-package com.classifier.processing;
+package com.classifier.process;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

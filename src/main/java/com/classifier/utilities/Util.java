@@ -78,5 +78,14 @@ public final class Util {
             concatenated += el + " ";
         }
         return concatenated;
+    }   
+
+    public static File[] fileArrayConcat(File[] a, File[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        File[] c = new File[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
     }
 }
