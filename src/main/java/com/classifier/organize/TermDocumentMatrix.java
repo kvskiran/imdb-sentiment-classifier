@@ -131,11 +131,18 @@ public class TermDocumentMatrix
         try {
             // add negative files to matrix
             File[] files_neg = new File(corpusBase + "neg").listFiles();
+
+            // for tracking
+            System.out.println("_________________________"
+                             + "_________________________");
+
+            int counter = 0;
             for (File file : files_neg) {
                 if (file.isFile()) {
                     addFiletoMatrix(documents.get("n" + file.getName()), 
                                     corpusBase + "neg" + File.separator + file.getName());
-                    System.out.println(file.getName() + " added to matrix");
+                    counter++;
+                    if (counter % 500 == 0) System.out.print("X");
                 }
             }
           
@@ -145,15 +152,16 @@ public class TermDocumentMatrix
                 if (file.isFile()) {
                     addFiletoMatrix(documents.get("p" + file.getName()), 
                                     corpusBase + "pos" + File.separator  + file.getName());
-                    System.out.println(file.getName() + " added to matrix");
+                    counter++;
+                    if (counter % 500 == 0) System.out.print("X");
                 }
             }
         }
         catch(Exception e) {
-            System.out.println("Error while initializing term document matrix. Message : " + e.toString());
+            System.out.println("\nError while initializing term document matrix. Message : " + e.toString());
         }
 
-        System.out.println("Matrix initialization complete.");
+        System.out.println("\nMatrix initialization complete.");
     }
     
     // testing

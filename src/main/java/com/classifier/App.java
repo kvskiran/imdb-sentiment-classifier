@@ -3,6 +3,7 @@ package com.classifier;
 import java.io.File;
 import java.util.List;
 
+import com.classifier.feature.ChiSquared;
 import com.classifier.feature.MutualInformation;
 import com.classifier.organize.TermDocumentMatrix;
 import com.classifier.process.Core;
@@ -27,48 +28,59 @@ public class App {
         Lemmatizer lem = new Lemmatizer();
         Stemmer stem = new Stemmer();
 
+        int counter = 0;
         for (File f : trainPos) {
             Core.process(f, lem, stem);
-            System.out.println(f.getAbsolutePath() + " processed.");
+            counter++;
+            if (counter % 500 == 0) System.out.println(counter + "/50000 documents processed");
         }
 
         for (File f : trainNeg) {
             Core.process(f, lem, stem);
-            System.out.println(f.getAbsolutePath() + " processed.");
+            counter++;
+            if (counter % 500 == 0) System.out.println(counter + "/50000 documents processed");
         }
 
         for (File f : testPos) {
             Core.process(f, lem, stem);
-            System.out.println(f.getAbsolutePath() + " processed.");
+            counter++;
+            if (counter % 500 == 0) System.out.println(counter + "/50000 documents processed");
         }
 
         for (File f : testNeg) {
             Core.process(f, lem, stem);
-            System.out.println(f.getAbsolutePath() + " processed.");
+            counter++;
+            if (counter % 500 == 0) System.out.println(counter + "/50000 documents processed");
         }
 
-        System.out.println("Processing complete.");
+        System.out.println("\nProcessing complete.");
 
-        System.out.println("Building vocabulary...");
+        System.out.println("\nBuilding vocabulary...");
 
-        // build vocabulary from processed training dat
+        // build vocabulary from processed training data
         Documents.buildVocab(processedDir + "train" + File.separator, 
                              processedDir + "imdb.vocab");
 
         TermDocumentMatrix matrix = new TermDocumentMatrix(processedDir);
         matrix.initMatrix();
 
-        List<String> posFeatures = MutualInformation.select(matrix, 100, true);
-        List<String> negFeatures = MutualInformation.select(matrix, 100, false);
+        ChiSquared chiFeatureSelector = new ChiSquared();
 
-        System.out.println("\nTop 100 positive features:");
-        for (String feature : posFeatures) {
+        List<String> chiFeatures = chiFeatureSelector.select(matrix, 100);
+
+        System.out.println("\nTop 100 chi squared features:");
+        for (String feature : chiFeatures) {
             System.out.println(feature);
         }
 
-        System.out.println("\nTop 100 negative features:");
-        for (String feature : negFeatures) {
+        MutualInformation miFeatureSelector = new MutualInformation();
+
+        List<String> miFeatures = miFeatureSelector.select(matrix, 100);
+
+        System.out.println("\nTop 100 mutual information features:");
+        for (String feature : miFeatures) {
             System.out.println(feature);
         }
     }
 }
+

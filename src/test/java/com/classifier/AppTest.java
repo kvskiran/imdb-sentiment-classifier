@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.classifier.feature.ChiSquared;
 import com.classifier.feature.MutualInformation;
 import com.classifier.organize.TermDocumentMatrix;
 import com.classifier.process.Core;
@@ -61,13 +62,39 @@ public class AppTest {
             }
         }
 
-        List<String> posFeatures = MutualInformation.select(matrix, 10, true);
-        for (String feature : posFeatures) {
+        System.out.println("=======mutual information=======");
+
+        MutualInformation mutualInformationSelector = new MutualInformation();
+
+        List<String> posFeaturesMi = mutualInformationSelector.select(matrix, 10);
+
+        System.out.println("\nPositive features:");
+        for (String feature : posFeaturesMi) {
             System.out.println(feature);
         }
 
-        List<String> negFeatures = MutualInformation.select(matrix, 10, false);
-        for (String feature : negFeatures) {
+        List<String> negFeaturesMi = mutualInformationSelector.select(matrix, 10);
+
+        System.out.println("\nNegative features:");
+        for (String feature : negFeaturesMi) {
+            System.out.println(feature);
+        }
+
+        System.out.println("\n=======chi squared=======");
+
+        ChiSquared chiSquaredSelector = new ChiSquared();
+
+        List<String> posFeaturesChi = chiSquaredSelector.select(matrix, 10);
+
+        System.out.println("\nPositive features:");
+        for (String feature : posFeaturesChi) {
+            System.out.println(feature);
+        }
+
+        List<String> negFeaturesChi = chiSquaredSelector.select(matrix, 10);
+
+        System.out.println("\nNegative features:");
+        for (String feature : negFeaturesChi) {
             System.out.println(feature);
         }
 

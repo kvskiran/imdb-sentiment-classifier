@@ -39,9 +39,6 @@ public final class Documents {
         for (File file : Util.fileArrayConcat(pos, neg)) {
             for (String token : tokenize(file.getAbsolutePath())) {
                 if (!vocab.contains(token)) {
-                    System.out.print(String.format("\033[%dA",1)); // Move up
-                    System.out.print("\033[2K");
-                    System.out.println("Adding " + token);
                     vocab.add(token);
                 }
             }
