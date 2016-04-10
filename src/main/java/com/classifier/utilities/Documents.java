@@ -29,6 +29,7 @@ public final class Documents {
         return tokenized;
     }
 
+    // build vocabulary from a corpus of documents
     public static void buildVocab(String corpusLocation, 
                                   String targetLocation) {
         File[] neg = new File(corpusLocation + "neg").listFiles();
@@ -38,6 +39,9 @@ public final class Documents {
         for (File file : Util.fileArrayConcat(pos, neg)) {
             for (String token : tokenize(file.getAbsolutePath())) {
                 if (!vocab.contains(token)) {
+                    System.out.print(String.format("\033[%dA",1)); // Move up
+                    System.out.print("\033[2K");
+                    System.out.println("Adding " + token);
                     vocab.add(token);
                 }
             }
@@ -46,6 +50,8 @@ public final class Documents {
         Collections.sort(vocab);
         
         try {
+            new File(targetLocation).createNewFile();
+        
             PrintStream ps = new PrintStream(targetLocation);
             for (String term : vocab) {
                 ps.println(term);

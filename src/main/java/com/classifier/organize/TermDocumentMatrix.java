@@ -1,6 +1,7 @@
 package com.classifier.organize;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -8,9 +9,12 @@ import java.util.List;
 import com.classifier.utilities.Documents;
 import com.classifier.utilities.Util;
 
-class TermDocumentMatrix
+public class TermDocumentMatrix
 {    
-    private HashMap<String, Integer> vocab;
+    public HashMap<String, Integer> vocab;
+    public HashMap<Integer, String> documentLookup;
+    public HashMap<String, List<Integer>> dictionary;
+
     private HashMap<String, Integer> documents;
     private String corpusLocation; 
 
@@ -26,6 +30,12 @@ class TermDocumentMatrix
         System.out.println("Loading documents...");
         documents = loadDocuments(corpusLocation + "train");
         System.out.println("Document count: " + documents.size());
+        
+        // invert document map to get document lookup
+        documentLookup = new HashMap<Integer, String>();
+        for (String docName : documents.keySet()) {
+            documentLookup.put(documents.get(docName), docName);
+        }
     }
    
     // loads all vocab terms into a hashmap
@@ -90,7 +100,16 @@ class TermDocumentMatrix
     
             for(String term : vocab.keySet()) {
                 int count = Collections.frequency(tokens, term);
-                if (count > 0) terms.put(term, count);
+
+                if (count > 0) {
+                    terms.put(term, count);
+                
+                    //add the docID to the posting list
+                    if (dictionary.get(term) == null) { 
+                        dictionary.put(term, new ArrayList<Integer>());
+                    }
+                    dictionary.get(term).add(docID);
+                }
             }
 
             matrix.put(docID,terms);
@@ -106,6 +125,7 @@ class TermDocumentMatrix
     {
         String corpusBase = corpusLocation + "train" + File.separator;
         matrix = new HashMap<Integer, HashMap<String, Integer>>();
+        dictionary = new HashMap<String, List<Integer>>();
         
         System.out.println("Beginning initialization of matrix...");
         try {
