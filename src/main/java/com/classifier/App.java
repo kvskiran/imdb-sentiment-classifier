@@ -20,7 +20,6 @@ public class App {
             + File.separator + "resources" + File.separator 
             + "processed" + File.separator + "aclImdb" + File.separator;
 
-/*
         File[] trainPos = new File(rawDir + "train" + File.separator + "pos").listFiles();
         File[] trainNeg = new File(rawDir + "train" + File.separator + "neg").listFiles();
         File[] testPos = new File(rawDir + "test" + File.separator + "pos").listFiles();
@@ -56,19 +55,18 @@ public class App {
         Documents.buildVocab(processedDir + "train" + File.separator, 
                              processedDir + "imdb.vocab");
 
-*/
         TermDocumentMatrix matrix = new TermDocumentMatrix(processedDir);
         matrix.initMatrix();
 
-        List<String> posFeatures = MutualInformation.select(matrix, 30, true);
-        List<String> negFeatures = MutualInformation.select(matrix, 30, false);
+        List<String> posFeatures = MutualInformation.select(matrix, 100, true);
+        List<String> negFeatures = MutualInformation.select(matrix, 100, false);
 
-        System.out.println("Top 30 positive features:");
+        System.out.println("\nTop 100 positive features:");
         for (String feature : posFeatures) {
             System.out.println(feature);
         }
 
-        System.out.println("Top 30 negative features:");
+        System.out.println("\nTop 100 negative features:");
         for (String feature : negFeatures) {
             System.out.println(feature);
         }

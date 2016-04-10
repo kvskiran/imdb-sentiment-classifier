@@ -5,6 +5,7 @@
 *.ear
 
 src/main/resources/processed/
+src/test/resources/processed/
 target/
 bin/
 .metadata/
