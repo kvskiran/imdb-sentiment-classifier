@@ -12,5 +12,9 @@ $ mvn compile
 ```
 $ mvn exec:java -Dexec.mainClass=com.classifier.App
 ```
+Running the main application will:
 
-This will process all IMDB files and store the processed files in the `src/main/resources/processed` directory
+1. Process all IMDB files and store the processed files in the `src/main/resources/processed` directory. 
+2. Build a vocabulary based on the processed files
+3. Insert all processed files into a term document matrix
+4. Select the top 100 positive and negative features using Mutual Information
