@@ -1,15 +1,17 @@
 package com.classifier;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import com.classifier.classify.SupportVectorMachine;
 import com.classifier.feature.ChiSquared;
-import com.classifier.feature.MutualInformation;
 import com.classifier.organize.TermDocumentMatrix;
 import com.classifier.process.Core;
 import com.classifier.process.Lemmatizer;
 import com.classifier.process.Stemmer;
 import com.classifier.utilities.Documents;
+import com.classifier.utilities.Util;
 
 public class App {
         
@@ -27,7 +29,7 @@ public class App {
         File[] testNeg = new File(rawDir + "test" + File.separator + "neg").listFiles();        
         Lemmatizer lem = new Lemmatizer();
         Stemmer stem = new Stemmer();
-
+/*
         int counter = 0;
         for (File f : trainPos) {
             Core.process(f, lem, stem);
@@ -60,27 +62,41 @@ public class App {
         // build vocabulary from processed training data
         Documents.buildVocab(processedDir + "train" + File.separator, 
                              processedDir + "imdb.vocab");
+*/
 
         TermDocumentMatrix matrix = new TermDocumentMatrix(processedDir);
         matrix.initMatrix();
 
         ChiSquared chiFeatureSelector = new ChiSquared();
 
-        List<String> chiFeatures = chiFeatureSelector.select(matrix, 100);
+        List<String> chiFeatures = chiFeatureSelector.select(matrix, 10);
 
-        System.out.println("\nTop 100 chi squared features:");
-        for (String feature : chiFeatures) {
-            System.out.println(feature);
+        float[][] featureMatrix = matrix.getFeatureMatrix(chiFeatures);
+        int[] sentimentVector = matrix.getSentimentVector();
+
+        SupportVectorMachine svm = new SupportVectorMachine(sentimentVector, featureMatrix);
+
+        int incorrect = 0;
+        for (File f : new File(processedDir + "test" + File.separator + "pos").listFiles()) {
+            String relativePath = processedDir + "test" + File.separator + "pos" 
+                + File.separator + f.getName();
+            
+            float[] testVec = matrix.getFeatureVectorFromDoc(relativePath,chiFeatures);
+            
+            if (svm.test(testVec) == -1) incorrect++;
         }
+        System.out.println(incorrect + "/12500 positive documents misclassified.");
 
-        MutualInformation miFeatureSelector = new MutualInformation();
-
-        List<String> miFeatures = miFeatureSelector.select(matrix, 100);
-
-        System.out.println("\nTop 100 mutual information features:");
-        for (String feature : miFeatures) {
-            System.out.println(feature);
+        incorrect = 0;
+        for (File f : new File(processedDir + "test" + File.separator + "neg").listFiles()) {
+            String relativePath = processedDir + "test" + File.separator + "neg" 
+                + File.separator + f.getName();
+            
+            float[] testVec = matrix.getFeatureVectorFromDoc(relativePath,chiFeatures);
+            
+            if (svm.test(testVec) == 1) incorrect++;
         }
+        System.out.println(incorrect + "/12500 negative documents misclassified.");
     }
 }
 

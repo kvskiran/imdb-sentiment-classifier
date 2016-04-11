@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.classifier.utilities.Documents;
 import com.classifier.utilities.Util;
@@ -21,6 +22,7 @@ public class TermDocumentMatrix
     public HashMap<Integer, HashMap<String, Integer>> matrix;
  
     public TermDocumentMatrix(String corpusLocationInput) {
+
         corpusLocation = corpusLocationInput;
 
         System.out.println("Loading vocab...");
@@ -91,6 +93,20 @@ public class TermDocumentMatrix
         return documentList;
     }  
   
+    public float[] getFeatureVectorFromDoc(String filePath, List<String> features) {
+        List<String> tokens = Documents.tokenize(filePath);
+        float[] featureVec = new float[features.size()];
+
+        for (String token : tokens) {
+            int count = Collections.frequency(tokens,token);
+
+            if (features.contains(token)) {
+                featureVec[features.indexOf(token)] = count;
+            }
+        }
+        return featureVec;
+    }
+    
     // process each document and add it to the term document matrix
     private void addFiletoMatrix(Integer docID, String filePath)
     {    
@@ -118,6 +134,43 @@ public class TermDocumentMatrix
             System.out.println("Error adding file to matrix. Message : " + e.toString());
             throw e;
         }
+    }
+
+    // convert matrix to a svm-able data structure 
+    // given a list of features
+    public float[][] getFeatureMatrix(List<String> features) {
+        float[][] featureMatrix 
+            = new float[matrix.entrySet().size()][features.size()];
+
+        for (Map.Entry<Integer, HashMap<String, Integer>> document 
+                 : matrix.entrySet()) {
+
+            float[] docVec = new float[features.size()];
+            int termCounter = 0;
+            for (Map.Entry<String,Integer> term 
+                     : document.getValue().entrySet()) {
+                if (features.contains(term.getKey())) {
+                    docVec[termCounter] = term.getValue();
+                    termCounter++;
+                }
+            }
+
+            featureMatrix[document.getKey()] = docVec;
+        }
+
+        return featureMatrix;
+    }
+
+    public int[] getSentimentVector() {
+        int[] sentimentVec = new int[documentLookup.size()];
+
+        for (int i=0; i<documentLookup.size(); i++) {
+            if (documentLookup.get(i).matches("^p.*")) {
+                sentimentVec[i] = 1;
+            } else sentimentVec[i] = -1;
+        }
+
+        return sentimentVec;
     }
 
     // build the term document matrix
@@ -166,8 +219,24 @@ public class TermDocumentMatrix
     
     // testing
     public static void main(String[] args) {
-        TermDocumentMatrix tdm = new TermDocumentMatrix("src" + File.separator + "main" + File.separator 
-                                                        + "resources" + File.separator + "aclImdb" + File.separator);
+        TermDocumentMatrix tdm = new TermDocumentMatrix("src" + File.separator + "test" + File.separator 
+                                                        + "resources" + File.separator + "processed"
+                                                        + File.separator + "aclImdb" + File.separator);
         tdm.initMatrix();
+        
+        List<String>  features = new ArrayList<String>();
+        features.add("good");
+        features.add("great");
+
+        float[][] featureMatrix = tdm.getFeatureMatrix(features);
+        int[] sentimentVec = tdm.getSentimentVector();
+
+        for (int i=0; i<featureMatrix.length; i++) {
+            for (int j=0; j<featureMatrix[i].length; j++) {
+                System.out.print(featureMatrix[i][j] + " ");
+            }
+            System.out.print(sentimentVec[i]);
+            System.out.print("\n");
+        }
     }
 }

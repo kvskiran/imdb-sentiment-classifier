@@ -28,11 +28,11 @@ public final class Util {
     }
     
     // read contents of a file into a String
-    public static String readFile(String path, Charset encoding)
+    public static String readFile(String path)
         throws IOException 
     {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
-        return new String(encoded,encoding);
+        return new String(encoded, Charset.forName("UTF-8"));
     }
 
     // read lines of file into a list

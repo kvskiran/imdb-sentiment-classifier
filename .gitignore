@@ -3,6 +3,7 @@
 *.jar
 *.war
 *.ear
+out.txt
 
 src/main/resources/processed/
 src/test/resources/processed/

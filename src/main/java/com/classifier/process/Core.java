@@ -3,7 +3,6 @@ package com.classifier.process;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import com.classifier.utilities.Util;
@@ -17,7 +16,7 @@ public final class Core {
                                                + File.separator + "processed"));
         
         try {
-            fileStr = Util.readFile(file.getAbsolutePath(), Charset.forName("UTF-8")).toLowerCase();
+            fileStr = Util.readFile(file.getAbsolutePath()).toLowerCase();
             processedFile.getParentFile().mkdirs();
             processedFile.createNewFile();
         } catch (IOException e) {

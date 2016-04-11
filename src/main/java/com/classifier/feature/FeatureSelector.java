@@ -19,7 +19,7 @@ public abstract class FeatureSelector {
         List<String> features = new LinkedList<String>();
 
         // use the positive class as the 'in' class
-        String identifier = "^p.*";
+        String identifier = "^n.*";
 
         // total count of documents
         double n = Double.parseDouble(matrix.documentLookup.keySet().size() + "");
