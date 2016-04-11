@@ -17,4 +17,6 @@ Running the main application will:
 1. Process all IMDB files and store the processed files in the `src/main/resources/processed` directory. 
 2. Build a vocabulary based on the processed files
 3. Insert all processed files into a term document matrix
-4. Select the top 100 features for each feature selection method
+4. Select the top 10 features using Chi Squared feature selection
+5. Train an SVM classifier on training data
+6. Test all test data using the trained SVM, tracking misclassifications
