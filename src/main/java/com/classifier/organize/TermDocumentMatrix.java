@@ -1,11 +1,15 @@
 package com.classifier.organize;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.classifier.utilities.Documents;
 import com.classifier.utilities.Util;
 
@@ -145,6 +149,70 @@ public class TermDocumentMatrix {
 			featureMatrix[document.getKey()] = docVec;
 		}
 		return featureMatrix;
+	}
+	
+	public void writeText(String fileName, List<String> features) {
+		FileOutputStream outputStream;
+		OutputStreamWriter outputStreamWriter;
+		BufferedWriter bufferedWriter;
+		try {
+			outputStream = new FileOutputStream(fileName);
+			outputStreamWriter = new OutputStreamWriter(outputStream);
+			bufferedWriter = new BufferedWriter(outputStreamWriter);
+			for (Map.Entry<Integer, HashMap<String, Integer>> document : matrix.entrySet()) {
+				if (documentLookup.get(document.getKey()).matches("^p.*")) {
+					bufferedWriter.write("+1 ");
+				} else {
+					bufferedWriter.write("-1 ");
+				}
+				for (int i = 0; i < features.size(); i++) {
+					if (document.getValue().containsKey(features.get(i)))
+						bufferedWriter.write((i + 1) + ":" + document.getValue().get(features.get(i)) + " ");
+				}
+				bufferedWriter.newLine();
+			}
+			bufferedWriter.close();
+		} catch (Exception e) {
+			System.out.println("\nError while initializing term document matrix. Message : " + e.toString());
+		}
+	}
+
+	public void writeTextTesting(String fileName, List<String> features) {
+		FileOutputStream outputStream;
+		OutputStreamWriter outputStreamWriter;
+		BufferedWriter bufferedWriter;
+		String processedDir = "src" + File.separator + "main" + File.separator + "resources" + File.separator
+				+ "processed" + File.separator + "aclImdb" + File.separator;
+		try {
+			outputStream = new FileOutputStream(fileName);
+			outputStreamWriter = new OutputStreamWriter(outputStream);
+			bufferedWriter = new BufferedWriter(outputStreamWriter);
+			for (File f : new File(processedDir + "test" + File.separator + "pos").listFiles()) {
+				String relativePath = processedDir + "test" + File.separator + "pos" + File.separator + f.getName();
+				bufferedWriter.write("+1 ");
+				List<String> tokens = Documents.tokenize(relativePath);
+				for (int i = 0; i < features.size(); i++) {
+					int count = Collections.frequency(tokens, features.get(i));
+					if (count > 0)
+						bufferedWriter.write((i + 1) + ":" + count + " ");
+				}
+				bufferedWriter.newLine();
+			}
+			for (File f : new File(processedDir + "test" + File.separator + "neg").listFiles()) {
+				String relativePath = processedDir + "test" + File.separator + "neg" + File.separator + f.getName();
+				bufferedWriter.write("-1 ");
+				List<String> tokens = Documents.tokenize(relativePath);
+				for (int i = 0; i < features.size(); i++) {
+					int count = Collections.frequency(tokens, features.get(i));
+					if (count > 0)
+						bufferedWriter.write((i + 1) + ":" + count + " ");
+				}
+				bufferedWriter.newLine();
+			}
+			bufferedWriter.close();
+		} catch (Exception e) {
+			System.out.println("\nError while initializing term document matrix. Message : " + e.toString());
+		}
 	}
 	
 	public int[] getSentimentVector() {

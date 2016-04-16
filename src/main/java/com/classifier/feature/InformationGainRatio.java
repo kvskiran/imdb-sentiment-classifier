@@ -12,6 +12,11 @@ import com.classifier.utilities.ValueComparator;
 
 public class InformationGainRatio {
 	protected static double calculateScore(double docTotal, double p, double n) {
+//		return (Math.abs(((p + 1) / (p + n + 1))
+//				* (Math.log((p + 1) / (p + n + 1)) / Math.log(2))
+//				- ((n + 1) / (p	+ n + 1))
+//				* (Math.log((n + 1) / (p + n + 1)) / Math.log(2))));
+
 		return (-((p + 1) / (p + n + 1))
 				* (Math.log((p + 1) / (p + n + 1)) / Math.log(2))
 				- ((n + 1) / (p	+ n + 1))

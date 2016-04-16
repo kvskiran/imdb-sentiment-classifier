@@ -71,6 +71,21 @@ public class App {
 
         List<String> chiFeatures = chiFeatureSelector.select(matrix, 10);
 
+        List<String> infoGainRatioFeatures = chiFeatureSelector.select(matrix, 100);
+
+        matrix.writeText("mtrain_igr_100", infoGainRatioFeatures);
+        matrix.writeTextTesting("mtest_igr_100", infoGainRatioFeatures);
+
+        infoGainRatioFeatures = chiFeatureSelector.select(matrix, 500);
+
+        matrix.writeText("mtrain_igr_500", infoGainRatioFeatures);
+        matrix.writeTextTesting("mtest_igr_500", infoGainRatioFeatures);
+        
+        infoGainRatioFeatures = chiFeatureSelector.select(matrix, 1000);
+
+        matrix.writeText("mtrain_igr_1000", infoGainRatioFeatures);
+        matrix.writeTextTesting("mtest_igr_1000", infoGainRatioFeatures);
+        
         float[][] featureMatrix = matrix.getFeatureMatrix(chiFeatures);
         int[] sentimentVector = matrix.getSentimentVector();
 
