@@ -23,4 +23,35 @@ public class StopwordRemover {
             return null;
         }
     }
+    public static List<String> removeStopwordsReduced(List<String> input) {
+        try {
+            List<String> stopwords = Util.readFileByLine("src" + File.separator + "main" + File.separator 
+                + "resources" + File.separator + "aclImdb" + File.separator + "stopwords_reduced.txt");
+            List<String> output = new ArrayList<String>();
+            for (String word : input) {
+                if (!stopwords.contains(word)) {
+                    output.add(word);
+                }
+            }
+            return output;        
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public static List<String> removeStopwordsExtraReduced(List<String> input) {
+        try {
+            List<String> stopwords = Util.readFileByLine("src" + File.separator + "main" + File.separator 
+                + "resources" + File.separator + "aclImdb" + File.separator + "stopwords_extrareduced.txt");
+            List<String> output = new ArrayList<String>();
+            for (String word : input) {
+                if (!stopwords.contains(word)) {
+                }
+                output.add(word);
+            }
+            return output;        
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
