@@ -1,0 +1,17 @@
+A_B_C_D
+
+A: train or test
+B: feature selection method
+	0: no selection
+	1: ChiSquare
+	2: MutualInformation
+	3: InformationGain
+	4: GainRatio
+	5: 
+	6: 
+C: Stop words option
+	0: stop words not removed
+	1: use stop word list no. 1
+	2: use stop word list no. 2
+	3: use stop word list no. 3
+D: No. of feature selected
