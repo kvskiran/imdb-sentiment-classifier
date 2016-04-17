@@ -27,9 +27,7 @@ public final class Core {
         List<String> lemmas = lem.lemmatize(fileStr);
         
         // remove stopwords and stem
-       // List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwords(lemmas);
-       // List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwordsReduced(lemmas);
-       List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwordsExtraReduced(lemmas);
+        List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwords(lemmas);
         
         List<String> stems 
             = stem.stemStr(Util.removeSpecialCharacters(Util.concatList(lemmasWithoutStopwords)));
