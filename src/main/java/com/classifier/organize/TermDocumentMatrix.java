@@ -118,7 +118,7 @@ public class TermDocumentMatrix {
 						dictionaryMatrix.get(term).put(count, z);
 					}
 					int[] inc = dictionaryMatrix.get(term).get(count);
-					if (filePath.matches("^src/test/resources/processed/aclImdb/train/p.*")) {
+					if (filePath.matches("^src/main/resources/processed/aclImdb/train/p.*")) {
 						inc[0]++;
 					} else {
 						inc[1]++;
