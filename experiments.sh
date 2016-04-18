@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# svm params
-SVM_TYPE=0
-KERNEL_TYPE=0
-
 # base directory
 BASE_DIR=~/programming-projects/libsvm
+SVM_OPTS=(0 1)
+KERNEL_OPTS=(0 1 2 3)
 
 cd $BASE_DIR
 OUTPUT_DIR=$BASE_DIR/experiments/output
@@ -14,15 +12,18 @@ OUTPUT_DIR=$BASE_DIR/experiments/output
 TRAIN_DIR=$BASE_DIR/experiments/train
 MODEL_DIR=$BASE_DIR/experiments/models
 
+for SVM in ${SVM_OPTS[@]}; do
+for KERNEL in ${KERNEL_OPTS[@]}; do
+
 for F in $(ls $TRAIN_DIR)
   do ID=$(echo $F | grep -o "_.*")
-     cat /dev/null > $OUTPUT_DIR/$ID.output
-     echo "./svm-train -s $SVM_TYPE -t $KERNEL_TYPE $TRAIN_DIR/$F $MODEL_DIR/$ID.model" >> $OUTPUT_DIR/$ID.output
-     echo "" >> $OUTPUT_DIR/$ID.output          
-     ./svm-train -s $SVM_TYPE -t $KERNEL_TYPE $TRAIN_DIR/$F $MODEL_DIR/$ID.model >> $OUTPUT_DIR/$ID.output 2>&1
-     echo "" >> $OUTPUT_DIR/$ID.output
-     echo "----" >> $OUTPUT_DIR/$ID.output
-     echo "" >> $OUTPUT_DIR/$ID.output
+     cat /dev/null > $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
+     echo "./svm-train -s $SVM -t $KERNEL $TRAIN_DIR/$F $MODEL_DIR/$ID-$SVM-$KERNEL.model" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
+     echo "" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output          
+     ./svm-train -s $SVM -t $KERNEL $TRAIN_DIR/$F $MODEL_DIR/$ID-$SVM-$KERNEL.model >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output 2>&1
+     echo "" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
+     echo "----" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
+     echo "" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
 done
 
 # testing
@@ -31,8 +32,25 @@ OUTPUT_DIR=$BASE_DIR/experiments/output
 
 for F in $(ls $TEST_DIR)
   do ID=$(echo $F | grep -o "_.*")
-     MODEL=$(ls $MODEL_DIR | grep $ID)
-     echo "./svm-predict $TEST_DIR/$F $MODEL_DIR/$MODEL /dev/null" >> $OUTPUT_DIR/$ID.output
-     echo "" >> $OUTPUT_DIR/$ID.output     
-     ./svm-predict $TEST_DIR/$F $MODEL_DIR/$MODEL /dev/null >> $OUTPUT_DIR/$ID.output 2>&1
+     MODEL=$(ls $MODEL_DIR | grep $ID-$SVM-$KERNEL)
+     echo "./svm-predict $TEST_DIR/$F $MODEL_DIR/$MODEL /dev/null" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
+     echo "" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output     
+     ./svm-predict $TEST_DIR/$F $MODEL_DIR/$MODEL /dev/null >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output 2>&1
 done
+
+done; done
+
+# analyze
+ANALYSIS_OUTPUT_FILE=$OUTPUT_DIR/sorted_accuracies
+cat /dev/null > $ANALYSIS_OUTPUT_FILE-temp
+
+for F in $(ls $OUTPUT_DIR | grep output)
+  do LINE=$(cat $OUTPUT_DIR/$F | grep Accuracy)
+     PERCENT=$(echo $LINE | grep -ob %)
+     PERCENT_INDEX=${PERCENT:0:2}
+     ACCURACY=${LINE:11:$PERCENT_INDEX-11}
+     echo "$ACCURACY :: $F" >> $ANALYSIS_OUTPUT_FILE-temp
+done
+
+sort -r $ANALYSIS_OUTPUT_FILE-temp > $ANALYSIS_OUTPUT_FILE
+# rm $ANALYSIS_OUTPUT_FILE-temp
