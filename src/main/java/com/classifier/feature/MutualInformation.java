@@ -14,10 +14,10 @@ public class MutualInformation extends FeatureSelector {
                                     double n10,
                                     double n01,
                                     double n00) {
-        return (((n11+1)/(n+1)) * Math.log(((n*n11)+1)/((n1*n1)+1)))
+        return -1*((((n11+1)/(n+1)) * Math.log(((n*n11)+1)/((n1*n1)+1)))
             + (((n01+1)/(n+1)) * Math.log(((n*n01)+1)/((n0*n1)+1)))
             + (((n10+1)/(n+1)) * Math.log(((n*n10)+1)/((n1*n0)+1)))
-            + (((n00+1)/(n+1)) * Math.log(((n*n00)+1)/((n0*n0)+1)));
+            + (((n00+1)/(n+1)) * Math.log(((n*n00)+1)/((n0*n0)+1))));
     }
 
     public static void main(String[] args) {
