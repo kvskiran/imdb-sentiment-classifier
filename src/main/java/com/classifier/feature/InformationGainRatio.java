@@ -1,34 +1,25 @@
 package com.classifier.feature;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import com.classifier.organize.TermDocumentMatrix;
-import com.classifier.utilities.Util;
 import com.classifier.utilities.ValueComparator;
 
 public class InformationGainRatio {
 	protected static double calculateScore(double docTotal, double p, double n) {
 
-		return (
-				- (((p + 1) / (p + n + 1)) * (Math.log((p + 1) / (p + n + 1)) / Math.log(2)))
-				- (((n + 1) / (p + n + 1)) * (Math.log((n + 1) / (p + n + 1)) / Math.log(2)))
-				);
+		return (-(((p + 1) / (p + n + 1)) * (Math.log((p + 1) / (p + n + 1)) / Math.log(2))) - (((n + 1) / (p + n + 1)) * (Math.log((n + 1)
+				/ (p + n + 1)) / Math.log(2))));
 	}
 
 	protected static double calculateScoreImproved(double docTotal, double p, double n) {
-		return Math.abs(
-				(((p + 1) / (p + n + 1)) * (Math.log((p + 1) / (p + n + 1)) / Math.log(2)))
-			  - (((n + 1) / (p + n + 1)) * (Math.log((n + 1) / (p + n + 1)) / Math.log(2)))
-						);
+		return Math.abs((((p + 1) / (p + n + 1)) * (Math.log((p + 1) / (p + n + 1)) / Math.log(2)))
+				- (((n + 1) / (p + n + 1)) * (Math.log((n + 1) / (p + n + 1)) / Math.log(2))));
 
 	}
 
@@ -76,30 +67,7 @@ public class InformationGainRatio {
 		featureScoresSorted.putAll(featureScores);
 		int i = 0;
 		for (Map.Entry<String, Double> entry : featureScoresSorted.entrySet()) {
-
-			 List<String> stopwords;
-			try {
-				stopwords = Util.readFileByLine("src" + File.separator + "main" + File.separator 
-				            + "resources" + File.separator + "aclImdb" + File.separator + "stopwords.txt");
-                if (stopwords.contains(entry.getKey())) {
-        			System.out.print(entry.getKey() + ": " + entry.getValue() + " ");
-        			for (Integer val : matrix.dictionaryMatrix.get(entry.getKey()).keySet()) {
-        				int valuep = matrix.dictionaryMatrix.get(entry.getKey()).get(val)[0];
-        				int valuen = matrix.dictionaryMatrix.get(entry.getKey()).get(val)[1];
-        				System.out.print("(" + val + "," + valuep + "-" + valuen + ")");
-        			}
-        			System.out.println();
-                	features.add(entry.getKey());
-                }
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-
+			features.add(entry.getKey());
 			i++;
 			if (i == amt)
 				break;
@@ -112,23 +80,23 @@ public class InformationGainRatio {
 				+ File.separator + "aclImdb" + File.separator;
 		TermDocumentMatrix matrix = new TermDocumentMatrix(processedDir);
 		matrix.initMatrix();
-		 for (String name : matrix.dictionaryMatrix.keySet()) {
-		 System.out.print(name + "[");
-		 for (Integer val : matrix.dictionaryMatrix.get(name).keySet()) {
-		 int valuep = matrix.dictionaryMatrix.get(name).get(val)[0];
-		 int valuen = matrix.dictionaryMatrix.get(name).get(val)[1];
-		 System.out.print("(" + val + "," + valuep + "-" + valuen + ")");
-		 }
-		 System.out.println("]");
-		 }
+		for (String name : matrix.dictionaryMatrix.keySet()) {
+			System.out.print(name + "[");
+			for (Integer val : matrix.dictionaryMatrix.get(name).keySet()) {
+				int valuep = matrix.dictionaryMatrix.get(name).get(val)[0];
+				int valuen = matrix.dictionaryMatrix.get(name).get(val)[1];
+				System.out.print("(" + val + "," + valuep + "-" + valuen + ")");
+			}
+			System.out.println("]");
+		}
 		System.out.println("1");
-		List<String> ig = select(matrix, 100, 1);
-		System.out.println("2");
-		List<String> igr = select(matrix, 100, 2);
-		System.out.println("3");
-		List<String> iig = select(matrix, 100, 3);
-		System.out.println("4");
-		List<String> iigr = select(matrix, 100, 4);
+		// List<String> ig = select(matrix, 100, 1);
+		// System.out.println("2");
+		// List<String> igr = select(matrix, 100, 2);
+		// System.out.println("3");
+		// List<String> iig = select(matrix, 100, 3);
+		// System.out.println("4");
+		// List<String> iigr = select(matrix, 100, 4);
 		// System.out.println(ig.toString());
 		// System.out.println(igr.toString());
 		// System.out.println(iig.toString());

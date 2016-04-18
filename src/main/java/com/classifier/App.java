@@ -1,18 +1,17 @@
 package com.classifier;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.classifier.classify.SupportVectorMachine;
 import com.classifier.feature.ChiSquared;
 import com.classifier.feature.InformationGainRatio;
+import com.classifier.feature.MutualInformation;
 import com.classifier.organize.TermDocumentMatrix;
 import com.classifier.process.Core;
 import com.classifier.process.Lemmatizer;
 import com.classifier.process.Stemmer;
 import com.classifier.utilities.Documents;
-import com.classifier.utilities.Util;
 
 public class App {
 
@@ -31,29 +30,30 @@ public class App {
 		Stemmer stem = new Stemmer();
 
 		int counter = 0;
+		String stopwordsList = "stopwords_list1.txt";
 		for (File f : trainPos) {
-			Core.process(f, lem, stem);
+			Core.process(f, lem, stem, stopwordsList);
 			counter++;
 			if (counter % 500 == 0)
 				System.out.println(counter + "/50000 documents processed");
 		}
 
 		for (File f : trainNeg) {
-			Core.process(f, lem, stem);
+			Core.process(f, lem, stem, stopwordsList);
 			counter++;
 			if (counter % 500 == 0)
 				System.out.println(counter + "/50000 documents processed");
 		}
 
 		for (File f : testPos) {
-			Core.process(f, lem, stem);
+			Core.process(f, lem, stem, stopwordsList);
 			counter++;
 			if (counter % 500 == 0)
 				System.out.println(counter + "/50000 documents processed");
 		}
 
 		for (File f : testNeg) {
-			Core.process(f, lem, stem);
+			Core.process(f, lem, stem, stopwordsList);
 			counter++;
 			if (counter % 500 == 0)
 				System.out.println(counter + "/50000 documents processed");
@@ -69,54 +69,51 @@ public class App {
 		matrix.initMatrix();
 
 		ChiSquared chiFeatureSelector = new ChiSquared();
-		List<String> chiFeatures = chiFeatureSelector.select(matrix, 10);
+		MutualInformation MIFeatureSelector = new MutualInformation();
 
-		List<String> infoGainRatioFeatures = InformationGainRatio.select(matrix, 1000, 1);	
-		matrix.writeText("train_ig_1000_erswr", infoGainRatioFeatures);
-		matrix.writeTextTesting("test_ig_1000_erswr", infoGainRatioFeatures);
+		List<String> features = new ArrayList<String>();
 
-		infoGainRatioFeatures = InformationGainRatio.select(matrix, 1000, 2);	
-		matrix.writeText("train_igr_1000_erswr", infoGainRatioFeatures);
-		matrix.writeTextTesting("test_igr_1000_erswr", infoGainRatioFeatures);
-		
-		infoGainRatioFeatures = InformationGainRatio.select(matrix, 1000, 3);	
-		matrix.writeText("train_iig_1000_erswr", infoGainRatioFeatures);
-		matrix.writeTextTesting("test_iig_1000_erswr", infoGainRatioFeatures);
-		
-		infoGainRatioFeatures = InformationGainRatio.select(matrix, 1000, 4);	
-		matrix.writeText("train_iigr_1000_erswr", infoGainRatioFeatures);
-		matrix.writeTextTesting("test_iigr_1000_erswr", infoGainRatioFeatures);
-		
-//		float[][] featureMatrix = matrix.getFeatureMatrix(chiFeatures);
-//		int[] sentimentVector = matrix.getSentimentVector();
+		int[] size = {500, 1000, 2000, 3000, 4000, 5000, 10000};
+		for (int method = 6; method < 7; method++) {
+			for (int featuresNo: size) {
+				switch (method) {
+				case 0:
+					for (String term : matrix.vocab.keySet()) {
+						features.add(term);
+					}
+					break;
+				case 1:
+					features = chiFeatureSelector.select(matrix, featuresNo);
+					break;
+				case 2:
+					features = MIFeatureSelector.select(matrix, featuresNo);
+					break;
+				case 3:
+					features = InformationGainRatio.select(matrix, featuresNo, 1);
+					break;
+				case 4:
+					features = InformationGainRatio.select(matrix, featuresNo, 2);
+					break;
+				case 5:
+					features = InformationGainRatio.select(matrix, featuresNo, 3);
+					break;
+				case 6:
+					features = InformationGainRatio.select(matrix, featuresNo, 4);
+					break;
+				default:
+					break;
+				}
 
-		/*
-		 * SupportVectorMachine svm = new SupportVectorMachine(sentimentVector,
-		 * featureMatrix);
-		 * 
-		 * int incorrect = 0; for (File f : new File(processedDir + "test" +
-		 * File.separator + "pos").listFiles()) { String relativePath =
-		 * processedDir + "test" + File.separator + "pos" + File.separator +
-		 * f.getName();
-		 * 
-		 * float[] testVec =
-		 * matrix.getFeatureVectorFromDoc(relativePath,chiFeatures);
-		 * 
-		 * if (svm.test(testVec) == -1) incorrect++; }
-		 * System.out.println(incorrect +
-		 * "/12500 positive documents misclassified.");
-		 * 
-		 * incorrect = 0; for (File f : new File(processedDir + "test" +
-		 * File.separator + "neg").listFiles()) { String relativePath =
-		 * processedDir + "test" + File.separator + "neg" + File.separator +
-		 * f.getName();
-		 * 
-		 * float[] testVec =
-		 * matrix.getFeatureVectorFromDoc(relativePath,chiFeatures);
-		 * 
-		 * if (svm.test(testVec) == 1) incorrect++; }
-		 * System.out.println(incorrect +
-		 * "/12500 negative documents misclassified.");
-		 */
+				if (method == 0) {
+					matrix.writeText("/Users/azeen/Dropbox/experiments/train/train_" + method + "_" + "0_" + features.size(), features);
+					matrix.writeTextTesting("/Users/azeen/Dropbox/experiments/test/test_" + method + "_" + "0_" + features.size(), features);
+					break;
+				}
+				matrix.writeText("/Users/azeen/Dropbox/experiments/train/train_" + method + "_" + "0_" + featuresNo, features);
+				matrix.writeTextTesting("/Users/azeen/Dropbox/experiments/test/test_" + method + "_" + "0_" + featuresNo, features);
+			}
+		}
+
 	}
+
 }

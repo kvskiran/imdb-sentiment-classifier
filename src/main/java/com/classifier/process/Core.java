@@ -8,7 +8,7 @@ import java.util.List;
 import com.classifier.utilities.Util;
 
 public final class Core {
-    public static void process(File file, Lemmatizer lem, Stemmer stem)  
+    public static void process(File file, Lemmatizer lem, Stemmer stem, String stopwordsList)  
     {
         String fileStr = "";
         File processedFile = new File(file.getAbsolutePath()
@@ -27,9 +27,7 @@ public final class Core {
         List<String> lemmas = lem.lemmatize(fileStr);
         
         // remove stopwords and stem
-       // List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwords(lemmas);
-       // List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwordsReduced(lemmas);
-       List<String> lemmasWithoutStopwords = StopwordRemover.removeStopwordsExtraReduced(lemmas);
+        List<String> lemmasWithoutStopwords = StopwordRemover.processStopwords(lemmas, stopwordsList);
         
         List<String> stems 
             = stem.stemStr(Util.removeSpecialCharacters(Util.concatList(lemmasWithoutStopwords)));
