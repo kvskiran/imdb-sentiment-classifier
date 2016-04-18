@@ -74,7 +74,10 @@ public class App {
 		List<String> features = new ArrayList<String>();
 
 		int[] size = {500, 1000, 2000, 3000, 4000, 5000, 10000};
-		for (int method = 6; method < 7; method++) {
+		System.out.println("Writing files in progress");
+		System.out.println("_______");
+		for (int method = 0; method < 7; method++) {
+			System.out.println("X");
 			for (int featuresNo: size) {
 				switch (method) {
 				case 0:

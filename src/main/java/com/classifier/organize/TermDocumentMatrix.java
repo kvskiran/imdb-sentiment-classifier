@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.classifier.utilities.Documents;
 import com.classifier.utilities.Util;
@@ -19,7 +20,7 @@ public class TermDocumentMatrix {
     public HashMap<String, List<Integer>> dictionary;
     private HashMap<String, Integer> documents;
     private String corpusLocation;
-    public HashMap<Integer, HashMap<String, Integer>> matrix;
+    public HashMap<Integer, HashMap<String, Double>> matrix;
     public HashMap<String, HashMap<Integer, int[]>> dictionaryMatrix;
 	
     public TermDocumentMatrix(String corpusLocationInput) {
@@ -82,7 +83,7 @@ public class TermDocumentMatrix {
         return documentList;
     }
 	
-    public float[] getFeatureVectorFromDoc(String filePath, List<String> features) {
+    /*public float[] getFeatureVectorFromDoc(String filePath, List<String> features) {
         List<String> tokens = Documents.tokenize(filePath);
         float[] featureVec = new float[features.size()];
         for (String token : tokens) {
@@ -92,22 +93,24 @@ public class TermDocumentMatrix {
             }
         }
         return featureVec;
-    }
+    }*/
 	
     // process each document and add it to the term document matrix
     private void addFiletoMatrix(Integer docID, String filePath) {
         try {
             List<String> tokens = Documents.tokenize(filePath);
-            HashMap<String, Integer> terms = new HashMap<String, Integer>();
+            HashMap<String, Double> terms = new HashMap<String, Double>();
             for (String term : vocab.keySet()) {
                 int count = Collections.frequency(tokens, term);
+                
                 if (count > 0) {
-                    terms.put(term, count);
+                    terms.put(term, (double) count);
                     // add the docID to the posting list
                     if (dictionary.get(term) == null) {
                         dictionary.put(term, new ArrayList<Integer>());
                     }
                     dictionary.get(term).add(docID);
+
                 }
                 if (count >= 0) {
                     if (dictionaryMatrix.get(term) == null) {
@@ -124,8 +127,7 @@ public class TermDocumentMatrix {
                         inc[1]++;
                     }
 
-                    double idf = Math.log(dictionary.get(term).size())/documents.keySet().size();
-                    dictionaryMatrix.get(term).replace(count, inc*idf);
+                    dictionaryMatrix.get(term).replace(count, inc);
                 }
             }
             matrix.put(docID, terms);
@@ -137,7 +139,7 @@ public class TermDocumentMatrix {
 	
     // convert matrix to a svm-able data structure
     // given a list of features
-    public float[][] getFeatureMatrix(List<String> features) {
+    /*public float[][] getFeatureMatrix(List<String> features) {
         float[][] featureMatrix = new float[matrix.entrySet().size()][features.size()];
         for (Map.Entry<Integer, HashMap<String, Integer>> document : matrix.entrySet()) {
             float[] docVec = new float[features.size()];
@@ -151,7 +153,7 @@ public class TermDocumentMatrix {
             featureMatrix[document.getKey()] = docVec;
         }
         return featureMatrix;
-    }
+    }*/
 	
     public void writeText(String fileName, List<String> features) {
         FileOutputStream outputStream;
@@ -161,7 +163,7 @@ public class TermDocumentMatrix {
             outputStream = new FileOutputStream(fileName);
             outputStreamWriter = new OutputStreamWriter(outputStream);
             bufferedWriter = new BufferedWriter(outputStreamWriter);
-            for (Map.Entry<Integer, HashMap<String, Integer>> document : matrix.entrySet()) {
+            for (Map.Entry<Integer, HashMap<String, Double>> document : matrix.entrySet()) {
                 if (documentLookup.get(document.getKey()).matches("^p.*")) {
                     bufferedWriter.write("+1 ");
                 } else {
@@ -175,7 +177,7 @@ public class TermDocumentMatrix {
             }
             bufferedWriter.close();
         } catch (Exception e) {
-            System.out.println("\nError while initializing term document matrix. Message : " + e.toString());
+            System.out.println("\nError while writing term document matrix files. Message : " + e.toString());
         }
     }
 
@@ -183,8 +185,8 @@ public class TermDocumentMatrix {
         FileOutputStream outputStream;
         OutputStreamWriter outputStreamWriter;
         BufferedWriter bufferedWriter;
-        String processedDir = "src" + File.separator + "main" + File.separator + "resources" + File.separator
-            + "testing" + File.separator + "processed" + File.separator + "aclImdb" + File.separator;
+		String processedDir = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "processed"
+				+ File.separator + "aclImdb" + File.separator;
         try {
             outputStream = new FileOutputStream(fileName);
             outputStreamWriter = new OutputStreamWriter(outputStream);
@@ -194,9 +196,10 @@ public class TermDocumentMatrix {
                 bufferedWriter.write("+1 ");
                 List<String> tokens = Documents.tokenize(relativePath);
                 for (int i = 0; i < features.size(); i++) {
-                    int count = Collections.frequency(tokens, features.get(i));
+                    int count = Collections.frequency(tokens, features.get(i));                    
+                    double idf = Math.log(documents.keySet().size()/dictionary.get(features.get(i)).size());
                     if (count > 0)
-                        bufferedWriter.write((i + 1) + ":" + count + " ");
+                        bufferedWriter.write((i + 1) + ":" + (count*idf) + " ");
                 }
                 bufferedWriter.newLine();
             }
@@ -206,14 +209,16 @@ public class TermDocumentMatrix {
                 List<String> tokens = Documents.tokenize(relativePath);
                 for (int i = 0; i < features.size(); i++) {
                     int count = Collections.frequency(tokens, features.get(i));
+                    double idf = Math.log(documents.keySet().size()/dictionary.get(features.get(i)).size());
                     if (count > 0)
-                        bufferedWriter.write((i + 1) + ":" + count + " ");
+                        bufferedWriter.write((i + 1) + ":" + (count*idf) + " ");
                 }
                 bufferedWriter.newLine();
             }
             bufferedWriter.close();
         } catch (Exception e) {
-            System.out.println("\nError while initializing term document matrix. Message : " + e.toString());
+        	e.printStackTrace();
+            System.out.println("\nError while writing term document matrix test files. Message : " + e.toString());
         }
     }
 	
@@ -231,7 +236,7 @@ public class TermDocumentMatrix {
     // build the term document matrix
     public void initMatrix() {
         String corpusBase = corpusLocation + "train" + File.separator;
-        matrix = new HashMap<Integer, HashMap<String, Integer>>();
+        matrix = new HashMap<Integer, HashMap<String, Double>>();
         dictionaryMatrix = new HashMap<String, HashMap<Integer, int[]>>();
         dictionary = new HashMap<String, List<Integer>>();
         System.out.println("Beginning initialization of matrix...");
@@ -261,6 +266,13 @@ public class TermDocumentMatrix {
                         System.out.print("X");
                 }
             }
+            for(Map.Entry<Integer, HashMap<String, Double>> entry: matrix.entrySet()){
+            	for(Entry<String, Double> term: entry.getValue().entrySet()){
+                    double idf = Math.log(documents.keySet().size()/dictionary.get(term.getKey()).size());
+                    matrix.get(entry.getKey()).replace(term.getKey(), term.getValue()*idf);
+            	}
+            }
+            
         } catch (Exception e) {
             System.out.println("\nError while initializing term document matrix. Message : " + e.toString());
         }
@@ -275,7 +287,7 @@ public class TermDocumentMatrix {
         List<String> features = new ArrayList<String>();
         features.add("good");
         features.add("great");
-        float[][] featureMatrix = tdm.getFeatureMatrix(features);
+        /*float[][] featureMatrix = tdm.getFeatureMatrix(features);
         int[] sentimentVec = tdm.getSentimentVector();
         for (int i = 0; i < featureMatrix.length; i++) {
             for (int j = 0; j < featureMatrix[i].length; j++) {
@@ -283,6 +295,6 @@ public class TermDocumentMatrix {
             }
             System.out.print(sentimentVec[i]);
             System.out.print("\n");
-        }
+        }*/
     }
 }
