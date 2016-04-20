@@ -30,7 +30,7 @@ public class App {
 		Stemmer stem = new Stemmer();
 
 		int counter = 0;
-		String stopwordsList = "stopwords_list1.txt";
+		String stopwordsList = "";
 		for (File f : trainPos) {
 			Core.process(f, lem, stem, stopwordsList);
 			counter++;
@@ -73,11 +73,12 @@ public class App {
 
 		List<String> features = new ArrayList<String>();
 
-		int[] size = {500, 1000, 2000, 3000, 4000, 5000, 10000};
+
+		int[] size = {10000};
 		System.out.println("Writing files in progress");
 		System.out.println("_______");
-		for (int method = 0; method < 7; method++) {
-			System.out.println("X");
+		for (int method = 1; method < 6; method++) {
+			System.out.print("X");
 			for (int featuresNo: size) {
 				switch (method) {
 				case 0:
@@ -100,20 +101,17 @@ public class App {
 				case 5:
 					features = InformationGainRatio.select(matrix, featuresNo, 3);
 					break;
-				case 6:
-					features = InformationGainRatio.select(matrix, featuresNo, 4);
-					break;
 				default:
 					break;
 				}
 
 				if (method == 0) {
-					matrix.writeText("/Users/azeen/Dropbox/experiments/train/train_" + method + "_" + "0_" + features.size(), features);
-					matrix.writeTextTesting("/Users/azeen/Dropbox/experiments/test/test_" + method + "_" + "0_" + features.size(), features);
+					matrix.writeText("/Users/azeen/Dropbox/experiments_0/train/train_" + method + "_" + "0_" + features.size(), features);
+					matrix.writeTextTesting("/Users/azeen/Dropbox/experiments_0/test/test_" + method + "_" + "0_" + features.size(), features);
 					break;
 				}
-				matrix.writeText("/Users/azeen/Dropbox/experiments/train/train_" + method + "_" + "0_" + featuresNo, features);
-				matrix.writeTextTesting("/Users/azeen/Dropbox/experiments/test/test_" + method + "_" + "0_" + featuresNo, features);
+				matrix.writeText("/Users/azeen/Dropbox/experiments_0/train/train_" + method + "_" + "0_" + featuresNo, features);
+				matrix.writeTextTesting("/Users/azeen/Dropbox/experiments_0/test/test_" + method + "_" + "0_" + featuresNo, features);
 			}
 		}
 
