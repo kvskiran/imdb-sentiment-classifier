@@ -1,2 +1,2 @@
-src/main/resources linguist-vendored
-src/test/resources linguist-vendored
+src/main/resources/* linguist-vendored
+src/test/resources/* linguist-vendored
