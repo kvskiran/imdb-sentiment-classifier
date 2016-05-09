@@ -14,6 +14,9 @@ several different feature selection methods.
 
 ### Build & Run
 
+1. Clone the repo
+2. Download the [corpus](http://ai.stanford.edu/~amaas/data/sentiment/aclImdb_v1.tar.gz), extract into src/main/resources/aclImdb
+3. Run these:
 ```
 $ mvn compile
 $ mvn exec:java -Dexec.mainClass=com.classifier.App
