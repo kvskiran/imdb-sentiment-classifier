@@ -35,12 +35,12 @@ public class AppTest {
         Stemmer stem = new Stemmer();
         
         for (File trainPosFile : trainPos) {
-            Core.process(trainPosFile, lem, stem);
+            Core.process(trainPosFile, lem, stem, "");
             System.out.println(trainPosFile.getAbsolutePath() + " processed.");
         }
         
         for (File trainNegFile : trainNeg) {
-            Core.process(trainNegFile, lem, stem);
+            Core.process(trainNegFile, lem, stem, "");
             System.out.println(trainNegFile.getAbsolutePath() + " processed.");
         }
         

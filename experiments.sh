@@ -1,11 +1,18 @@
 #!/bin/bash
 
 # base directory
-BASE_DIR=~/programming-projects/libsvm
+BASE_DIR=~/libsvm
 SVM_OPTS=(0 1)
 KERNEL_OPTS=(0 1 2 3)
+CACHE_SIZE=1000
+
+if [ "$1" ]; then
+    CACHE_SIZE=$1
+fi
 
 cd $BASE_DIR
+mkdir experiments experiments/train experiments/test experiments/output experiments/models
+
 OUTPUT_DIR=$BASE_DIR/experiments/output
 
 # training
@@ -18,9 +25,9 @@ for KERNEL in ${KERNEL_OPTS[@]}; do
 for F in $(ls $TRAIN_DIR)
   do ID=$(echo $F | grep -o "_.*")
      cat /dev/null > $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
-     echo "./svm-train -s $SVM -t $KERNEL $TRAIN_DIR/$F $MODEL_DIR/$ID-$SVM-$KERNEL.model" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
+     echo "./svm-train -s $SVM -t $KERNEL -m $CACHE_SIZE $TRAIN_DIR/$F $MODEL_DIR/$ID-$SVM-$KERNEL.model" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
      echo "" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output          
-     ./svm-train -s $SVM -t $KERNEL $TRAIN_DIR/$F $MODEL_DIR/$ID-$SVM-$KERNEL.model >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output 2>&1
+     ./svm-train -s $SVM -t $KERNEL -m $CACHE_SIZE $TRAIN_DIR/$F $MODEL_DIR/$ID-$SVM-$KERNEL.model >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output 2>&1
      echo "" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
      echo "----" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
      echo "" >> $OUTPUT_DIR/$ID-$SVM-$KERNEL.output
